@@ -24,7 +24,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError('');
     try {
-      const result = await apiLogin(username, password);
+      const result = await apiLogin({ username, password });
       if (result.status === 'success') {
         setUser(result.data);
         return true;
