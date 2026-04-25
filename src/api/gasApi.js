@@ -16,7 +16,9 @@ export async function callGAS(action, params = {}) {
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({ action, params }),
     });
-    return await response.json();
+    const result = await response.json();
+    console.log('GAS API Response:', result);
+    return result;
   } catch (error) {
     console.error('GAS API Error:', error);
     return { status: 'error', message: error.toString() };
@@ -46,8 +48,11 @@ async function mockResponse(action, params) {
     login: async () => {
       await delay(500);
       if (params.username === 'admin' && params.password === 'admin') {
-        return { status: 'success', data: { employeeId: 'EMP001', employeeName: '管理員', role: 'admin' } };
+        const res = { status: 'success', data: { employeeId: 'EMP001', employeeName: '管理員', role: 'admin' } };
+        console.log('Mock Login Success:', res);
+        return res;
       }
+      console.log('Mock Login Failed (wrong credentials)');
       return { status: 'error', message: '帳密錯誤' };
     },
     getData: async () => {
