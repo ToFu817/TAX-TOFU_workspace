@@ -100,7 +100,7 @@ export default function BillingData() {
   const handleFormChange = (field, value) => {
     setForm((prev) => {
       const updated = { ...prev, [field]: value };
-      
+
       // 自動帶入客戶資料
       if (field === 'clientId') {
         const client = clients.find(c => String(c.clientId).trim() === String(value).trim());
@@ -171,16 +171,25 @@ export default function BillingData() {
     { key: 'clientId', label: '客戶編號', width: '90px' },
     { key: 'companyName', label: '公司行號', minWidth: '160px' },
     { key: 'handler', label: '承辦', width: '80px' },
-    { key: 'billingMonth', label: '月份', width: '90px' },
     { 
-      key: 'isPaid', 
-      label: '收款', 
-      width: '50px', 
+      key: 'billingMonth', 
+      label: '月份', 
+      width: '90px',
+      render: (v) => {
+        if (!v) return '';
+        // 如果是完整的日期字串 2026/04/25，只取前 7 個字元 2026/04
+        return String(v).substring(0, 7);
+      }
+    },
+    {
+      key: 'isPaid',
+      label: '收款',
+      width: '50px',
       align: 'center',
       render: (_, row) => (
-        <input 
-          type="checkbox" 
-          checked={Number(row.unpaid) === 0 && Number(row.paid) > 0} 
+        <input
+          type="checkbox"
+          checked={Number(row.unpaid) === 0 && Number(row.paid) > 0}
           onChange={() => handleTogglePaid(row)}
           style={{ cursor: 'pointer', width: '20px', height: '20px' }}
         />
@@ -189,7 +198,7 @@ export default function BillingData() {
     { key: 'amount', label: '總額', width: '100px', render: (v) => formatCurrency(v) },
     { key: 'paid', label: '已收', width: '100px', render: (v) => <span style={{ color: '#3A6B3A', fontWeight: 600 }}>{formatCurrency(v)}</span> },
     { key: 'unpaid', label: '待收', width: '100px', render: (v) => Number(v) > 0 ? <span style={{ color: '#D4726A', fontWeight: 700 }}>{formatCurrency(v)}</span> : '0' },
-    { key: 'paymentDate', label: '收款日期', width: '110px' },
+    { key: 'paymentDate', label: '收款日期', width: '110px', render: (v) => formatDate(v) },
   ];
 
   return (
@@ -240,7 +249,7 @@ export default function BillingData() {
           <TofuInput label="客戶編號" value={form.clientId || ''} onChange={(v) => handleFormChange('clientId', v)} placeholder="輸入自動帶入公司名稱" required />
           <TofuInput label="公司行號名稱" value={form.companyName || ''} readOnly placeholder="自動匹配中..." />
           <TofuSelect label="承辦" value={form.handler || ''} onChange={(v) => handleFormChange('handler', v)} options={handlerOptions} />
-          
+
           <div className="form-row-multi">
             <TofuSelect label="收費年份" value={selYear} onChange={setSelYear} options={yearOptions} />
             <TofuSelect label="收費月份" value={selMonth} onChange={setSelMonth} options={monthOptions} />
