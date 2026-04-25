@@ -171,14 +171,20 @@ export default function BillingData() {
     { key: 'clientId', label: '客戶編號', width: '90px' },
     { key: 'companyName', label: '公司行號', minWidth: '160px' },
     { key: 'handler', label: '承辦', width: '80px' },
-    { 
-      key: 'billingMonth', 
-      label: '月份', 
+    {
+      key: 'billingMonth',
+      label: '月份',
       width: '90px',
       render: (v) => {
         if (!v) return '';
-        // 如果是完整的日期字串 2026/04/25，只取前 7 個字元 2026/04
-        return String(v).substring(0, 7);
+        const d = new Date(v);
+        if (isNaN(d.getTime())) return String(v).substring(0, 7);
+        // 強制處理時區，避免少一天
+        const year = d.getUTCFullYear();
+        const month = d.getUTCMonth() + 1;
+        // 如果小時是 16，代表是台灣時間 00:00 的 UTC 偏移，要加回一天或直接用當地時間
+        const localDate = new Date(d.getTime() + (d.getTimezoneOffset() * 60000));
+        return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}`;
       }
     },
     {
@@ -198,7 +204,14 @@ export default function BillingData() {
     { key: 'amount', label: '總額', width: '100px', render: (v) => formatCurrency(v) },
     { key: 'paid', label: '已收', width: '100px', render: (v) => <span style={{ color: '#3A6B3A', fontWeight: 600 }}>{formatCurrency(v)}</span> },
     { key: 'unpaid', label: '待收', width: '100px', render: (v) => Number(v) > 0 ? <span style={{ color: '#D4726A', fontWeight: 700 }}>{formatCurrency(v)}</span> : '0' },
-    { key: 'paymentDate', label: '收款日期', width: '110px', render: (v) => formatDate(v) },
+    {
+      key: 'paymentDate', label: '收款日期', width: '110px', render: (v) => {
+        if (!v) return '';
+        const d = new Date(v);
+        if (isNaN(d.getTime())) return v;
+        return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+      }
+    },
   ];
 
   return (

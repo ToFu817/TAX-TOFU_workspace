@@ -96,8 +96,8 @@ export default function ClientAllocation() {
               unassignedClients.map((client) => (
                 <div key={client.clientId} className="alloc-client-item">
                   <div className="alloc-client-info">
+                    <span className="alloc-client-id">[{client.clientId}]</span>
                     <span className="alloc-client-name">{client.companyName}</span>
-                    <span className="alloc-client-id">{client.clientId}</span>
                   </div>
                   <TofuButton size="sm" onClick={() => { setSelectedClient(client); setSelectedHandler(''); setAssignModal(true); }}>分配</TofuButton>
                 </div>
@@ -125,9 +125,11 @@ export default function ClientAllocation() {
                     (groupClients?.length || 0) > 0 && (
                       <div key={status} className="alloc-status-group">
                         <div className="alloc-status-label">{status}</div>
-                        {groupClients.map((c) => (
                           <div key={c.clientId} className="alloc-handler-client-row">
-                            <span>{c.companyName}</span>
+                            <div className="alloc-handler-client-info">
+                              <span className="alloc-client-id">[{c.clientId}]</span>
+                              <span>{c.companyName}</span>
+                            </div>
                             <div className="alloc-client-actions">
                               <TofuButton size="xs" variant="ghost" onClick={() => { setSelectedClient(c); setSelectedHandler(c.handler); setAssignModal(true); }}>更改</TofuButton>
                               <TofuButton size="xs" variant="danger" onClick={() => setDeleteTarget(c)}>移除</TofuButton>

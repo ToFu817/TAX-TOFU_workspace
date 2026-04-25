@@ -52,7 +52,8 @@
 .alloc-client-info {
   flex: 1;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
 .alloc-client-name {
@@ -133,6 +134,7 @@
 
 .alloc-handler-client-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: var(--space-sm);
   padding: 6px 8px;
@@ -141,8 +143,11 @@
   font-size: var(--font-size-xs);
 }
 
-.alloc-handler-client-row span:first-child {
+.alloc-handler-client-info {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .alloc-assign-client {
