@@ -32,17 +32,21 @@ export default function ClientAllocation() {
   // 2. 已分配：按承辦人員分組顯示
   const handlerGroups = useMemo(() => {
     const groups = {};
-    employees.forEach((emp) => {
-      groups[emp.employeeName] = { 
-        '營業中': [], '停業': [], '歇業': [], '轉出': [], '其他': []
-      };
+    // 初始化所有員工的分組
+    (employees || []).forEach((emp) => {
+      if (emp.employeeName) {
+        groups[emp.employeeName.trim()] = { 
+          '營業中': [], '停業': [], '歇業': [], '轉出': [], '其他': []
+        };
+      }
     });
     
-    clients.forEach((c) => {
-      if (c.handler && groups[c.handler]) {
-        const status = c.status || '其他';
+    (clients || []).forEach((c) => {
+      const handlerName = (c.handler || '').trim();
+      if (handlerName && groups[handlerName]) {
+        const status = (c.status || '').trim();
         const groupKey = ['營業中', '停業', '歇業', '轉出'].includes(status) ? status : '其他';
-        groups[c.handler][groupKey].push(c);
+        groups[handlerName][groupKey].push(c);
       }
     });
     return groups;
