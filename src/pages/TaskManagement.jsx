@@ -86,10 +86,15 @@ export default function TaskManagement() {
     const checkIsReviewing = (t) => {
       if (t.status === TASK_STATUS.REVIEWING) return true;
       if (t.status === '已完成') {
-        const compDate = t.completedDate ? formatDate(t.completedDate, 'yyyy/MM/dd') : '';
-        // 如果完成日期早於今天，或是今天完成但已經 22:00 之後
-        if (compDate && compDate < todayStr) return true;
-        if (compDate === todayStr && currentHour >= 22) return true;
+        if (!t.completedDate) return false;
+        const compDate = new Date(t.completedDate);
+        if (isNaN(compDate.getTime())) return false;
+
+        // 轉成日期字串比較 (避免時間干擾)
+        const compDateStr = compDate.getFullYear() + '/' + (compDate.getMonth() + 1).toString().padStart(2, '0') + '/' + compDate.getDate().toString().padStart(2, '0');
+        
+        if (compDateStr < todayStr) return true;
+        if (compDateStr === todayStr && currentHour >= 22) return true;
       }
       return false;
     };
@@ -262,7 +267,7 @@ export default function TaskManagement() {
     },
   ];
 
-  const taskItemOptions = taskItems.map((t) => t.itemName || t['項目名稱'] || '');
+  const taskItemOptions = taskItems.map((t) => t.taskItem || t.itemName || t['項目名稱'] || '');
   const handlerOptions = employees.map((e) => ({ value: e.employeeName, label: e.employeeName }));
 
   return (

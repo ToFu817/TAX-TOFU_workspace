@@ -7,8 +7,8 @@
 const SPREADSHEET_ID = SpreadsheetApp.getActiveSpreadsheet().getId();
 const FIELD_MAP = {
   'employeeId': '員工編號', 'employeeName': '員工姓名', 'title': '職稱', 'role': '權限', 'username': '帳號', 'password': '密碼',
-  'clientId': '客戶編號', 'orgType': '組織型態', 'companyName': '公司行號名稱', 'handler': '承辦', 'status': '狀態',
-  'yearNote': '年度註記', 'taxId': '統一編號', 'taxRegId': '稅藉編號', 'zipCode': '郵遞區號', 'contactAddress': '聯絡地址(發票寄送地址)',
+  'clientId': '客戶編號', 'orgType': '組織型態', 'companyName': '公司行號名稱', 'handler': '承辦', 'status': '目前狀態',
+  'yearNote': '年度註記', 'taxId': '統一編號', 'taxRegId': '稅藉編號', 'zipCode': '郵遞區號', 'contactAddress': '聯絡地址',
   'regAddress': '營業登記地址', 'owner': '負責人', 'contactPerson': '聯絡人', 'mailPhone': '郵寄電話', 'deliveryMethod': '送件方式',
   'pickupMethod': '取件方式', 'companyPhone': '公司電話', 'contactMobile': '聯絡人手機', 'email': 'Email', 'taxExt': '國稅局分機',
   'note': '備忘錄', 'taxPassword': '稅務申報密碼', 'healthInsCode': '健保投保代號', 
