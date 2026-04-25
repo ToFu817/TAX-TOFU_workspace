@@ -215,7 +215,10 @@ export default function BillingData() {
       )}
 
       <div className="billing-toolbar">
-        <TofuButton onClick={() => handleOpen()} icon="➕">新增收費紀錄</TofuButton>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <TofuButton onClick={() => handleOpen()} icon="➕">新增收費紀錄</TofuButton>
+          <span style={{ fontSize: '10px', color: '#ccc' }}>v1.2 (含自動計算)</span>
+        </div>
         {isAdmin && (
           <TofuButton variant="secondary" onClick={() => setImportOpen(true)} icon="📥">Excel 匯入</TofuButton>
         )}
