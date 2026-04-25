@@ -109,6 +109,28 @@ export default function BillingData() {
     if (result.success) { toast.success(result.message); setImportOpen(false); refetch(); }
   };
 
+  const handleTogglePaid = async (row) => {
+    if (Number(row.unpaid) === 0 && Number(row.paid) > 0) {
+      // 如果已經收過，取消勾選則清空已收
+      await update(SHEET_NAMES.BILLING, row.rowIndex, {
+        ...row,
+        paid: 0,
+        unpaid: row.amount,
+        paymentDate: ''
+      });
+    } else {
+      // 勾選：收齊全額
+      const today = new Date().toISOString().split('T')[0].replace(/-/g, '/');
+      await update(SHEET_NAMES.BILLING, row.rowIndex, {
+        ...row,
+        paid: row.amount,
+        unpaid: 0,
+        paymentDate: today
+      });
+    }
+    refetch();
+  };
+
   const handlerOptions = employees.map((e) => ({ value: e.employeeName, label: e.employeeName }));
 
   const tabs = [
@@ -122,9 +144,25 @@ export default function BillingData() {
     { key: 'companyName', label: '公司行號', minWidth: '140px' },
     { key: 'handler', label: '承辦', width: '80px' },
     { key: 'billingMonth', label: '收費月份', width: '100px' },
-    { key: 'amount', label: '收費金額', width: '100px', render: (v) => formatCurrency(v) },
-    { key: 'paid', label: '已收款', width: '100px', render: (v) => <span style={{ color: '#3A6B3A' }}>{formatCurrency(v)}</span> },
-    { key: 'unpaid', label: '待收款', width: '100px', render: (v) => Number(v) > 0 ? <span style={{ color: '#D4726A', fontWeight: 700 }}>{formatCurrency(v)}</span> : '0' },
+    { 
+      key: 'paid', 
+      label: '收款', 
+      width: '50px', 
+      align: 'center',
+      render: (_, row) => (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <input 
+            type="checkbox" 
+            checked={Number(row.unpaid) === 0 && Number(row.paid) > 0} 
+            onChange={() => handleTogglePaid(row)}
+            style={{ cursor: 'pointer', width: '18px', height: '18px' }}
+          />
+        </div>
+      )
+    },
+    { key: 'amount', label: '收費金額', width: '90px', render: (v) => formatCurrency(v) },
+    { key: 'paid_val', label: '已收', width: '90px', render: (_, row) => <span style={{ color: '#3A6B3A' }}>{formatCurrency(row.paid)}</span> },
+    { key: 'unpaid', label: '待收', width: '90px', render: (v) => Number(v) > 0 ? <span style={{ color: '#D4726A', fontWeight: 700 }}>{formatCurrency(v)}</span> : '0' },
     { key: 'paymentDate', label: '收款日期', width: '100px' },
   ];
 

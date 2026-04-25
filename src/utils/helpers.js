@@ -42,7 +42,7 @@ export function generateId(prefix = '') {
  */
 export function autoFillClientData(clientId, clientList) {
   if (!clientId || !clientList?.length) return {};
-  const client = clientList.find((c) => c.clientId === clientId);
+  const client = clientList.find((c) => String(c.clientId).trim() === String(clientId).trim());
   if (!client) return {};
   return {
     companyName: client.companyName || '',
