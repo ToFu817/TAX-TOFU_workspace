@@ -79,6 +79,20 @@ function getSheet(name) {
   return s;
 }
 function getHeaders(sheet) { return sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0]; }
+// 強化版的標題對應邏輯
+function getInternalKey(header) {
+  // 先找精確匹配
+  const exact = Object.keys(FIELD_MAP).find(k => FIELD_MAP[k] === header);
+  if (exact) return exact;
+  
+  // 處理常見同義詞
+  if (header === '狀態' || header === '目前狀態') return 'status';
+  if (header === '聯絡地址(發票寄送地址)' || header === '聯絡地址') return 'contactAddress';
+  if (header === '任務項目' || header === '任務項目清單') return 'taskItem';
+  
+  return header;
+}
+
 function getSheetData(sheet) {
   if (sheet.getLastRow() < 2) return [];
   const hs = getHeaders(sheet);
@@ -86,7 +100,7 @@ function getSheetData(sheet) {
   return vs.map((row, i) => {
     const obj = { rowIndex: i + 2 };
     hs.forEach((h, j) => {
-      const key = Object.keys(FIELD_MAP).find(k => FIELD_MAP[k] === h) || h;
+      const key = getInternalKey(h);
       obj[key] = row[j];
     });
     return obj;
@@ -94,7 +108,7 @@ function getSheetData(sheet) {
 }
 function mapDataToRow(headers, obj) {
   return headers.map(h => {
-    const key = Object.keys(FIELD_MAP).find(k => FIELD_MAP[k] === h) || h;
+    const key = getInternalKey(h);
     return obj[key] !== undefined ? obj[key] : '';
   });
 }
