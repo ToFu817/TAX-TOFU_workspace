@@ -1,0 +1,29 @@
+.client-data {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.client-data__toolbar {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.client-data__search {
+  max-width: 300px;
+}
+
+.client-form__section {
+  margin-bottom: var(--space-lg);
+}
+
+.client-form__section-title {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-wood);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-xs);
+  border-bottom: 2px solid var(--color-cream-deep);
+}

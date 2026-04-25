@@ -1,0 +1,141 @@
+.alloc-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.alloc-page__toolbar {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.alloc-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: var(--space-lg);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .alloc-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.alloc-section-title {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-wood-dark);
+  margin-bottom: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.alloc-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.alloc-client-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-cream);
+  border-radius: var(--radius-md);
+}
+
+.alloc-client-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.alloc-client-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.alloc-client-id {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.alloc-empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: var(--space-xl);
+  font-size: var(--font-size-sm);
+}
+
+.alloc-empty-small {
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: var(--space-md);
+  font-size: var(--font-size-xs);
+}
+
+.alloc-handler-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--space-md);
+}
+
+.alloc-handler-card {
+  padding: var(--space-md) !important;
+}
+
+.alloc-handler-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.alloc-handler-name {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  display: block;
+}
+
+.alloc-handler-count {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.alloc-handler-clients {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.alloc-handler-client-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 6px 8px;
+  background: var(--color-cream);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+}
+
+.alloc-handler-client-row span:first-child {
+  flex: 1;
+}
+
+.alloc-assign-client {
+  padding: var(--space-md);
+  background: var(--color-cream);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  display: flex;
+  gap: var(--space-sm);
+}

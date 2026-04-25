@@ -1,0 +1,80 @@
+.tofu-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tofu-input-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.tofu-input-required {
+  color: #D4726A;
+  margin-left: 2px;
+}
+
+.tofu-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tofu-input-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 1.1em;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.tofu-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  background: var(--color-tofu);
+  color: var(--color-text);
+  transition: all var(--duration-normal) var(--transition-bounce);
+  font-family: var(--font-family);
+}
+
+.tofu-input-icon + .tofu-input {
+  padding-left: 40px;
+}
+
+.tofu-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.tofu-input:focus {
+  border-color: var(--color-wood-light);
+  box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
+  transform: scale(1.01);
+}
+
+.tofu-input:disabled {
+  background: var(--color-cream);
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tofu-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.tofu-input-wrap--error .tofu-input {
+  border-color: var(--color-pink-deep);
+}
+
+.tofu-input-error {
+  font-size: var(--font-size-xs);
+  color: #D4726A;
+}
+
+.tofu-input-wrap--focused .tofu-input-label {
+  color: var(--color-wood);
+}

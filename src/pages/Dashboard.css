@@ -1,0 +1,127 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.dashboard__welcome h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-wood-dark);
+}
+
+.dashboard__welcome p {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+/* Stat Cards */
+.dashboard__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-md);
+}
+
+.stat-card {
+  text-align: center;
+  padding: var(--space-lg) var(--space-md) !important;
+}
+
+.stat-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: var(--space-sm);
+}
+
+.stat-card__icon {
+  font-size: 1.3rem;
+}
+
+.stat-card__label {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text-light);
+}
+
+.stat-card__value {
+  font-size: var(--font-size-3xl);
+  font-weight: 800;
+  color: var(--color-wood-dark);
+}
+
+.stat-card--yellow { border-top: 4px solid var(--color-pending); }
+.stat-card--pink { border-top: 4px solid var(--color-delayed); }
+.stat-card--green { border-top: 4px solid var(--color-completed); }
+.stat-card--blue { border-top: 4px solid var(--color-reviewing); }
+.stat-card--purple { border-top: 4px solid var(--color-reviewed); }
+
+/* Summary Cards */
+.dashboard__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+.summary-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-md);
+}
+
+.summary-card__header span {
+  font-size: 1.4rem;
+}
+
+.summary-card__header h3 {
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.summary-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) 0;
+}
+
+.summary-item__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+}
+
+.summary-item__value {
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-wood-dark);
+}
+
+.summary-item__value--warn {
+  color: #D4726A;
+}
+
+.summary-card__note {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+  line-height: 1.8;
+}

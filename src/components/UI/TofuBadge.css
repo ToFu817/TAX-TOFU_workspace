@@ -1,0 +1,19 @@
+.tofu-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: var(--font-size-xs);
+  white-space: nowrap;
+}
+
+.tofu-badge--sm { padding: 2px 8px; font-size: 0.65rem; }
+.tofu-badge--lg { padding: 6px 16px; font-size: var(--font-size-sm); }
+
+.tofu-badge--yellow { background: var(--color-pending); color: #7A6520; }
+.tofu-badge--pink { background: var(--color-delayed); color: #8B3A3A; }
+.tofu-badge--green { background: var(--color-completed); color: #3A6B3A; }
+.tofu-badge--blue { background: var(--color-reviewing); color: #2A5A8A; }
+.tofu-badge--purple { background: var(--color-reviewed); color: #5A3A8A; }
+.tofu-badge--orange { background: var(--color-orange); color: #8A5A2A; }

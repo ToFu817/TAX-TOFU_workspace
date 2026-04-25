@@ -1,0 +1,11 @@
+.tofu-card {
+  background: var(--color-tofu);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-tofu);
+  transition: box-shadow var(--duration-normal) var(--transition-smooth);
+}
+
+.tofu-card--hoverable:hover {
+  box-shadow: var(--shadow-tofu-hover);
+}

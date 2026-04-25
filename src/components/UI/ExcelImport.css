@@ -1,0 +1,50 @@
+.excel-import {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.excel-import__input {
+  display: none;
+}
+
+.excel-import__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-cream);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--transition-smooth);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+}
+
+.excel-import__label:hover {
+  border-color: var(--color-wood-light);
+  background: var(--color-cream-deep);
+  color: var(--color-text);
+}
+
+.excel-import__error {
+  color: #D4726A;
+  font-size: var(--font-size-xs);
+}
+
+.excel-import__preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-green);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.excel-import__info {
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}

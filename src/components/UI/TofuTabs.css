@@ -1,0 +1,59 @@
+.tofu-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--color-cream);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  flex-wrap: wrap;
+}
+
+.tofu-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--transition-smooth);
+  white-space: nowrap;
+  font-family: var(--font-family);
+}
+
+.tofu-tab:hover {
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--color-text);
+}
+
+.tofu-tab--active {
+  background: var(--color-tofu);
+  color: var(--color-wood-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.tofu-tab__icon {
+  font-size: 1em;
+}
+
+.tofu-tab__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: var(--radius-full);
+  background: var(--color-cream-deep);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.tofu-tab--active .tofu-tab__count {
+  background: var(--color-wood);
+  color: white;
+}

@@ -1,0 +1,252 @@
+/* ============================================
+   AccLaw 案件管理系統 — Tofu Design System
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap');
+
+/* ---------- Design Tokens ---------- */
+:root {
+  /* Colors */
+  --color-cream: #FFF9E3;
+  --color-cream-deep: #FFF3C4;
+  --color-tofu: #FFFFFF;
+  --color-tofu-hover: #FFFDF7;
+  --color-wood: #8B7355;
+  --color-wood-light: #A89070;
+  --color-wood-dark: #6B5640;
+  --color-text: #5A4A3A;
+  --color-text-light: #8B7B6B;
+  --color-text-muted: #B0A090;
+  --color-border: #E8DCC8;
+  --color-border-light: #F0E8D8;
+
+  /* Accent Colors (soft) */
+  --color-pink: #FFE4E1;
+  --color-pink-deep: #FFD0CC;
+  --color-blue: #E0F0FF;
+  --color-blue-deep: #C0DFFF;
+  --color-green: #E8F5E0;
+  --color-green-deep: #C8E8B8;
+  --color-yellow: #FFF3D0;
+  --color-yellow-deep: #FFE8A0;
+  --color-purple: #F0E8FF;
+  --color-purple-deep: #E0D0FF;
+  --color-orange: #FFF0E0;
+  --color-orange-deep: #FFE0C0;
+
+  /* Status Colors */
+  --color-pending: #FFE8A0;
+  --color-delayed: #FFD0CC;
+  --color-completed: #C8E8B8;
+  --color-reviewing: #C0DFFF;
+  --color-reviewed: #E0D0FF;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(139, 115, 85, 0.06);
+  --shadow-md: 0 4px 16px rgba(139, 115, 85, 0.08);
+  --shadow-lg: 0 8px 32px rgba(139, 115, 85, 0.12);
+  --shadow-tofu: 0 4px 12px rgba(139, 115, 85, 0.06), 0 1px 3px rgba(139, 115, 85, 0.04);
+  --shadow-tofu-hover: 0 8px 24px rgba(139, 115, 85, 0.1), 0 2px 6px rgba(139, 115, 85, 0.06);
+  --shadow-tofu-active: 0 2px 6px rgba(139, 115, 85, 0.08);
+
+  /* Border Radius */
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Transitions */
+  --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  /* Typography */
+  --font-family: 'Nunito', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.8125rem;
+  --font-size-base: 0.9375rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.375rem;
+  --font-size-2xl: 1.75rem;
+  --font-size-3xl: 2.25rem;
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 72px;
+  --header-height: 64px;
+}
+
+/* ---------- Reset & Base ---------- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-cream);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+}
+
+input,
+select,
+textarea {
+  font-family: var(--font-family);
+  outline: none;
+}
+
+/* ---------- Scrollbar (Tofu Style) ---------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-wood-light);
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes tofu-bounce-in {
+  0% { transform: scale(0.9); opacity: 0; }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes tofu-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tofu-slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tofu-slide-right {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes tofu-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+@keyframes tofu-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes number-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes overlay-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes modal-bounce {
+  0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0; }
+  60% { transform: translate(-50%, -50%) scale(1.03); }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* ---------- Utility Classes ---------- */
+.animate-fade-in {
+  animation: tofu-fade-in var(--duration-normal) var(--transition-smooth) both;
+}
+
+.animate-slide-up {
+  animation: tofu-slide-up var(--duration-slow) var(--transition-bounce) both;
+}
+
+.animate-bounce-in {
+  animation: tofu-bounce-in var(--duration-slow) var(--transition-bounce) both;
+}
+
+/* Stagger children */
+.stagger-children > * {
+  animation: tofu-fade-in var(--duration-normal) var(--transition-smooth) both;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+.stagger-children > *:nth-child(9) { animation-delay: 400ms; }
+.stagger-children > *:nth-child(10) { animation-delay: 450ms; }
+
+/* Loading spinner */
+.tofu-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-wood);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Number pop animation for value changes */
+.number-pop {
+  animation: number-pop var(--duration-normal) var(--transition-bounce);
+}

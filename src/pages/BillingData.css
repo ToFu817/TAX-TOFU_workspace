@@ -1,0 +1,81 @@
+.billing-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.billing-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-md);
+}
+
+.billing-stat-card {
+  text-align: center;
+  padding: var(--space-lg) !important;
+}
+
+.billing-stat-icon {
+  font-size: 1.8rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.billing-stat-label {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-light);
+  font-weight: 600;
+}
+
+.billing-stat-value {
+  display: block;
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  color: var(--color-wood-dark);
+  margin-top: 4px;
+}
+
+.billing-stat-card--green {
+  border-top: 4px solid var(--color-green-deep);
+}
+
+.billing-stat-card--red {
+  border-top: 4px solid var(--color-pink-deep);
+}
+
+.billing-handler-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.billing-handler-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-cream);
+  border-radius: var(--radius-md);
+}
+
+.billing-handler-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.billing-handler-name {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
+.billing-handler-detail {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.billing-toolbar {
+  display: flex;
+  gap: var(--space-sm);
+}

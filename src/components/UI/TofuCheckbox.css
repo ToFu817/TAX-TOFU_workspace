@@ -1,0 +1,52 @@
+.tofu-checkbox {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: 12px;
+}
+
+.tofu-checkbox__box {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.tofu-checkbox__box:hover {
+  border-color: #8D7B68;
+}
+
+.tofu-checkbox__box--checked {
+  background: #639832; /* 更醒目的綠色 */
+  border-color: #639832;
+  box-shadow: 0 4px 8px rgba(99, 152, 50, 0.3);
+}
+
+.tofu-checkbox__box--disabled {
+  background: #f5f5f5;
+  border-color: #eeeeee;
+  cursor: default;
+}
+
+.tofu-checkbox__box--checked.tofu-checkbox__box--disabled {
+  background: #a8c686; /* 已完成但不可再動的淡綠色 */
+  border-color: #a8c686;
+  opacity: 0.8;
+}
+
+.tofu-checkbox__label {
+  font-size: 14px;
+  color: #555;
+  font-weight: 500;
+}
+
+.tofu-checkbox--disabled .tofu-checkbox__label {
+  color: #bbb;
+}

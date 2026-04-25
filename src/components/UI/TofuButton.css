@@ -1,0 +1,87 @@
+.tofu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--transition-smooth);
+  white-space: nowrap;
+  font-family: var(--font-family);
+}
+
+.tofu-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Sizes */
+.tofu-btn--sm {
+  padding: 6px 14px;
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-sm);
+}
+
+.tofu-btn--md {
+  padding: 10px 20px;
+  font-size: var(--font-size-sm);
+}
+
+.tofu-btn--lg {
+  padding: 14px 28px;
+  font-size: var(--font-size-md);
+}
+
+/* Variants */
+.tofu-btn--primary {
+  background: var(--color-wood);
+  color: white;
+}
+
+.tofu-btn--primary:hover:not(:disabled) {
+  background: var(--color-wood-dark);
+}
+
+.tofu-btn--secondary {
+  background: var(--color-cream-deep);
+  color: var(--color-wood-dark);
+}
+
+.tofu-btn--secondary:hover:not(:disabled) {
+  background: var(--color-cream);
+}
+
+.tofu-btn--ghost {
+  background: transparent;
+  color: var(--color-wood);
+}
+
+.tofu-btn--ghost:hover:not(:disabled) {
+  background: var(--color-cream);
+}
+
+.tofu-btn--danger {
+  background: var(--color-pink-deep);
+  color: #8B3A3A;
+}
+
+.tofu-btn--danger:hover:not(:disabled) {
+  background: #FFBBB5;
+}
+
+.tofu-btn--success {
+  background: var(--color-green-deep);
+  color: #3A6B3A;
+}
+
+.tofu-btn--success:hover:not(:disabled) {
+  background: #B8D8A8;
+}
+
+.tofu-btn__icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.1em;
+}
