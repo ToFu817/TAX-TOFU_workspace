@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useGasQuery } from '../hooks/useGasQuery';
 import { useGasRpc } from '../hooks/useGasRpc';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/UI/TofuToast';
 import { SHEET_NAMES, BILLING_FIELDS } from '../utils/constants';
-import { formatCurrency, autoFillClientData } from '../utils/helpers';
+import { formatCurrency } from '../utils/helpers';
 import TofuTable from '../components/UI/TofuTable';
 import TofuButton from '../components/UI/TofuButton';
 import TofuModal from '../components/UI/TofuModal';
@@ -32,6 +32,14 @@ export default function BillingData() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [importOpen, setImportOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
+
+  // 年月份選單選項
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: 5 }, (_, i) => ({ value: String(currentYear - 2 + i), label: String(currentYear - 2 + i) }));
+  const monthOptions = Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1).padStart(2, '0'), label: `${i + 1}月` }));
+
+  const [selYear, setSelYear] = useState(String(currentYear));
+  const [selMonth, setSelMonth] = useState(String(new Date().getMonth() + 1).padStart(2, '0'));
 
   // 收款統計
   const stats = useMemo(() => {
@@ -72,18 +80,28 @@ export default function BillingData() {
     setEditing(item);
     if (item) {
       setForm({ ...item });
+      const [y, m] = String(item.billingMonth || '').split('/');
+      if (y && m) { setSelYear(y); setSelMonth(m); }
     } else {
       const empty = {};
       BILLING_FIELDS.forEach((f) => { empty[f.key] = ''; });
-      setForm(empty);
+      setForm({ ...empty, billingMonth: `${selYear}/${selMonth}` });
     }
     setModalOpen(true);
   };
 
-  // 處理客戶編號變更：自動帶入公司名稱
+  // 當年份或月份下拉選單變動時，更新 form.billingMonth
+  useEffect(() => {
+    if (modalOpen) {
+      setForm(prev => ({ ...prev, billingMonth: `${selYear}/${selMonth}` }));
+    }
+  }, [selYear, selMonth]);
+
   const handleFormChange = (field, value) => {
     setForm((prev) => {
       const updated = { ...prev, [field]: value };
+      
+      // 自動帶入客戶資料
       if (field === 'clientId') {
         const client = clients.find(c => String(c.clientId).trim() === String(value).trim());
         if (client) {
@@ -91,6 +109,14 @@ export default function BillingData() {
           updated.handler = client.handler || '';
         }
       }
+
+      // 自動計算待收款: 收費金額 - 已收款
+      if (field === 'amount' || field === 'paid') {
+        const amt = Number(field === 'amount' ? value : updated.amount) || 0;
+        const paid = Number(field === 'paid' ? value : updated.paid) || 0;
+        updated.unpaid = amt - paid;
+      }
+
       return updated;
     });
   };
@@ -107,20 +133,15 @@ export default function BillingData() {
     }
   };
 
-  // 列表一鍵收款功能
   const handleTogglePaid = async (row) => {
     const isCurrentlyPaid = Number(row.unpaid) === 0 && Number(row.paid) > 0;
-    
     let updates;
     if (isCurrentlyPaid) {
-      // 取消勾選
       updates = { ...row, paid: 0, unpaid: row.amount, paymentDate: '' };
     } else {
-      // 勾選：收齊全額
       const today = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
       updates = { ...row, paid: row.amount, unpaid: 0, paymentDate: today };
     }
-
     const result = await update(SHEET_NAMES.BILLING, row.rowIndex, updates);
     if (result.success) {
       toast.success(isCurrentlyPaid ? '已取消收款狀態' : '收款成功！');
@@ -213,13 +234,18 @@ export default function BillingData() {
 
       <TofuModal isOpen={modalOpen} onClose={() => setModalOpen(false)} title={editing ? '編輯收費' : '新增收費'} onConfirm={handleSave} loading={mutating}>
         <div className="modal-form-grid">
-          <TofuInput label="客戶編號" value={form.clientId || ''} onChange={(v) => handleFormChange('clientId', v)} placeholder="輸入後自動帶入公司名" required />
+          <TofuInput label="客戶編號" value={form.clientId || ''} onChange={(v) => handleFormChange('clientId', v)} placeholder="輸入自動帶入公司名稱" required />
           <TofuInput label="公司行號名稱" value={form.companyName || ''} readOnly placeholder="自動匹配中..." />
           <TofuSelect label="承辦" value={form.handler || ''} onChange={(v) => handleFormChange('handler', v)} options={handlerOptions} />
-          <TofuInput label="收費月份" value={form.billingMonth || ''} onChange={(v) => handleFormChange('billingMonth', v)} placeholder="如：2026/04" />
+          
+          <div className="form-row-multi">
+            <TofuSelect label="收費年份" value={selYear} onChange={setSelYear} options={yearOptions} />
+            <TofuSelect label="收費月份" value={selMonth} onChange={setSelMonth} options={monthOptions} />
+          </div>
+
           <TofuInput label="收費金額" value={form.amount || ''} onChange={(v) => handleFormChange('amount', v)} type="number" />
           <TofuInput label="已收款" value={form.paid || ''} onChange={(v) => handleFormChange('paid', v)} type="number" />
-          <TofuInput label="待收款" value={form.unpaid || ''} onChange={(v) => handleFormChange('unpaid', v)} type="number" />
+          <TofuInput label="待收款" value={form.unpaid || ''} readOnly style={{ backgroundColor: '#f0f0f0' }} />
           <TofuInput label="收款日期" value={form.paymentDate || ''} onChange={(v) => handleFormChange('paymentDate', v)} type="date" />
           <div className="full-width">
             <TofuInput label="銀行帳戶 / 備註" value={form.bankAccount || ''} onChange={(v) => handleFormChange('bankAccount', v)} type="textarea" />

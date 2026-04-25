@@ -71,8 +71,14 @@
 }
 
 .billing-handler-detail {
-  font-size: var(--font-size-xs);
+  font-size: 0.75rem;
   color: var(--color-text-muted);
+}
+
+.form-row-multi {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
 }
 
 .billing-toolbar {
