@@ -77,7 +77,7 @@ export default function TaskManagement() {
     }
   }, [form.clientId, clientMap]);
 
-  const filteredTasks = useMemo(() => {
+  const filtered = useMemo(() => {
     const now = new Date();
     const currentHour = now.getHours();
     const todayStr = formatDate(now, 'yyyy/MM/dd');
