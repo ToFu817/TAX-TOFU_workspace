@@ -178,28 +178,37 @@ function handleGetDashboardStats() {
   const now = new Date();
   const currentHour = now.getHours();
   const todayStr = Utilities.formatDate(now, 'Asia/Taipei', 'yyyy/MM/dd');
-  const todayMidnight = new Date(now.setHours(0,0,0,0));
+  const todayTime = new Date(now.setHours(0,0,0,0)).getTime();
 
   let stats = { pending: 0, delayed: 0, completed: 0, reviewing: 0, reviewed: 0 };
 
   tasks.forEach(t => {
-    const status = t.status || '';
-    const hasFinished = t.completedDate || ['已完成', '待審核', '已審核'].includes(status);
-    const isOverdue = t.dueDate && new Date(t.dueDate) < todayMidnight;
-    
-    // 判斷是否在「待審核」狀態 (已完成且過了晚上10點，或是日期早於今天)
+    const status = String(t.status || '').trim();
+    let compDateStr = '';
+    if (t.completedDate) {
+      try {
+        const d = new Date(t.completedDate);
+        if (!isNaN(d.getTime())) {
+          compDateStr = Utilities.formatDate(d, 'Asia/Taipei', 'yyyy/MM/dd');
+        }
+      } catch(e) {}
+    }
+
+    const isOverdue = t.dueDate && (new Date(t.dueDate).getTime() < todayTime);
+    const hasFinished = compDateStr !== '' || ['已完成', '待審核', '已審核'].includes(status);
+
+    // 判斷是否待審核
     let isReviewing = (status === '待審核');
-    if (status === '已完成') {
-      if (t.completedDate) {
-        const compDateStr = Utilities.formatDate(new Date(t.completedDate), 'Asia/Taipei', 'yyyy/MM/dd');
+    if (status === '已完成' || compDateStr !== '') {
+      if (compDateStr !== '') {
         if (compDateStr < todayStr) isReviewing = true;
-        if (compDateStr === todayStr && currentHour >= 22) isReviewing = true;
+        else if (compDateStr === todayStr && currentHour >= 22) isReviewing = true;
       }
     }
 
     if (status === '已審核') stats.reviewed++;
     else if (isReviewing) stats.reviewing++;
-    else if (status === '已完成') stats.completed++;
+    else if (status === '已完成' || compDateStr !== '') stats.completed++;
     else if (!hasFinished && (status === '延遲中' || isOverdue)) stats.delayed++;
     else stats.pending++;
   });
