@@ -18,13 +18,13 @@ export default function TaskItems() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ itemId: '', itemName: '', category: '' });
+  const [form, setForm] = useState({ itemCode: '', itemName: '', category: '' });
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [importOpen, setImportOpen] = useState(false);
 
   const handleOpen = (item = null) => {
     setEditing(item);
-    setForm(item ? { ...item } : { itemId: generateId('IT'), itemName: '', category: '' });
+    setForm(item ? { ...item } : { itemCode: generateId('IT'), itemName: '', category: '' });
     setModalOpen(true);
   };
 
@@ -51,7 +51,7 @@ export default function TaskItems() {
   };
 
   const columns = [
-    { key: 'itemId', label: '項目編號', width: '120px' },
+    { key: 'itemCode', label: '項目編號', width: '120px' },
     { key: 'itemName', label: '項目名稱' },
     { key: 'category', label: '類別', width: '100px' },
   ];

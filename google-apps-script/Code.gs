@@ -13,7 +13,8 @@ const FIELD_MAP = {
   'pickupMethod': '取件方式', 'companyPhone': '公司電話', 'contactMobile': '聯絡人手機', 'email': 'Email', 'taxExt': '國稅局分機',
   'note': '備忘錄', 'taxPassword': '稅務申報密碼', 'healthInsCode': '健保投保代號', 
   'taskId': '任務編號', 'taskItem': '任務項目', 'dueDate': '預計完成日', 'completedDate': '實際完成日',
-  'reviewer': '審核人', 'reviewDate': '審核日期'
+  'reviewer': '審核人', 'reviewDate': '審核日期',
+  'itemCode': '項目編號', 'itemName': '項目名稱', 'category': '類別'
 };
 
 function doPost(e) {
