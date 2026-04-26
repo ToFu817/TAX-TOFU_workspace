@@ -333,42 +333,43 @@ function handleGetDashboardStats(p = {}) {
   const currentMonth = String(new Date().getMonth() + 1);
   const thisMonthAnnual = annualTasks.filter(a => String(a.month) === currentMonth).map(a => a.annualTask);
 
-  let totalBilling = 0;
-  let unpaidBilling = 0;
-  
-  const billings = getSheetData(getSheet('收費資料'));
-  const startStr = p.startMonth ? String(p.startMonth) : '';
-  const endStr = p.endMonth ? String(p.endMonth) : '';
+  const today = new Date();
+  const future7d = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const future7dStr = Utilities.formatDate(future7d, 'Asia/Taipei', 'yyyy-MM-dd');
 
-  billings.forEach(b => {
-    let matchDate = true;
-    if (startStr && endStr) {
-      let bMonth = '';
-      if (Object.prototype.toString.call(b.billingMonth) === '[object Date]' && !isNaN(b.billingMonth.getTime())) {
-        bMonth = Utilities.formatDate(b.billingMonth, 'Asia/Taipei', 'yyyy-MM');
-      } else if (b.billingMonth) {
-        let str = String(b.billingMonth).trim();
+  let urgentTasks = [];
+  if (p.employeeName) {
+    const myTasks = tasks.filter(t => t.handler === p.employeeName);
+    myTasks.forEach(t => {
+      const status = String(t.status || '').trim();
+      if (status === '已完成' || status === '已審核' || status === '待審核') return;
+
+      let dDate = '';
+      if (Object.prototype.toString.call(t.dueDate) === '[object Date]' && !isNaN(t.dueDate.getTime())) {
+        dDate = Utilities.formatDate(t.dueDate, 'Asia/Taipei', 'yyyy-MM-dd');
+      } else if (t.dueDate) {
+        let str = String(t.dueDate).trim();
         if (str.includes('T')) {
           const d = new Date(str);
-          if (!isNaN(d.getTime())) bMonth = Utilities.formatDate(d, 'Asia/Taipei', 'yyyy-MM');
+          if (!isNaN(d.getTime())) dDate = Utilities.formatDate(d, 'Asia/Taipei', 'yyyy-MM-dd');
         } else {
-          bMonth = str.substring(0, 7).replace(/\//g, '-');
+          dDate = str.substring(0, 10).replace(/\//g, '-');
         }
       }
-      if (bMonth) {
-        matchDate = (bMonth >= startStr && bMonth <= endStr);
-      } else {
-        matchDate = false;
+
+      if (status === '延遲中') {
+        urgentTasks.push({ ...t, dueDate: dDate });
+      } else if (status === '待處理' && dDate && dDate <= future7dStr) {
+        urgentTasks.push({ ...t, dueDate: dDate });
       }
-    }
-    
-    if (matchDate) {
-      const amount = Number(b.amount) || 0;
-      const unpaid = Number(b.unpaid) || 0;
-      totalBilling += amount;
-      unpaidBilling += unpaid;
-    }
-  });
+    });
+
+    urgentTasks.sort((a, b) => {
+      if (a.status === '延遲中' && b.status !== '延遲中') return -1;
+      if (a.status !== '延遲中' && b.status === '延遲中') return 1;
+      return (a.dueDate || '') > (b.dueDate || '') ? 1 : -1;
+    });
+  }
 
   return { 
     status: 'success', 
@@ -377,8 +378,7 @@ function handleGetDashboardStats(p = {}) {
       totalClients, 
       unassignedClients,
       monthlyGoals: thisMonthAnnual,
-      totalBilling,
-      unpaidBilling
+      urgentTasks
     }
   };
 }

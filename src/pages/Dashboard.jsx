@@ -19,22 +19,10 @@ export default function Dashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [startMonth, setStartMonth] = useState(() => {
-    const d = new Date();
-    d.setDate(1);
-    return d.toISOString().substring(0, 7);
-  });
-  const [endMonth, setEndMonth] = useState(() => {
-    const d = new Date();
-    d.setMonth(d.getMonth() + 1);
-    d.setDate(0);
-    return d.toISOString().substring(0, 7);
-  });
-
   const fetchStats = async () => {
     setLoading(true);
     try {
-      const result = await getDashboardStats({ startMonth, endMonth });
+      const result = await getDashboardStats({ employeeName: user?.employeeName });
       if (result.status === 'success') setStats(result.data);
     } finally {
       setLoading(false);
@@ -42,8 +30,10 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchStats();
-  }, [startMonth, endMonth]);
+    if (user?.employeeName) {
+      fetchStats();
+    }
+  }, [user?.employeeName]);
 
   if (loading) {
     return (
@@ -107,39 +97,30 @@ export default function Dashboard() {
           </div>
         </TofuCard>
 
-        {isAdmin && (
-          <TofuCard className="summary-card">
-            <div className="summary-card__header">
-              <span>💰</span>
-              <h3>收費統計</h3>
+        <TofuCard className="summary-card">
+          <div className="summary-card__header">
+            <span>🔥</span>
+            <h3>我的緊急任務</h3>
+          </div>
+          <div className="summary-card__body">
+            <div className="monthly-goals">
+              {(stats?.urgentTasks || []).map((task, i) => (
+                <div key={i} className="monthly-goal-item">
+                  <span className="goal-bullet" style={{ color: task.status === '延遲中' ? '#e74c3c' : '#f39c12' }}>•</span>
+                  <div style={{ flex: 1 }}>
+                    <div className="goal-text">{task.taskItem} <span style={{ fontSize: '11px', color: '#888', marginLeft: '6px' }}>{task.companyName}</span></div>
+                    <div style={{ fontSize: '12px', color: task.status === '延遲中' ? '#e74c3c' : '#666' }}>
+                      {task.status === '延遲中' ? `已延遲 (期限: ${task.dueDate})` : `即將到期 (${task.dueDate})`}
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {(!stats?.urgentTasks || stats.urgentTasks.length === 0) && (
+                <p className="summary-card__note">目前沒有緊急或延遲的任務，太棒了！🎉</p>
+              )}
             </div>
-            <div className="summary-card__body">
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                <input 
-                  type="month" 
-                  value={startMonth} 
-                  onChange={(e) => setStartMonth(e.target.value)} 
-                  style={{ flex: 1, padding: '4px', borderRadius: '4px', border: '1px solid #ccc' }}
-                />
-                <span style={{ alignSelf: 'center' }}>-</span>
-                <input 
-                  type="month" 
-                  value={endMonth} 
-                  onChange={(e) => setEndMonth(e.target.value)} 
-                  style={{ flex: 1, padding: '4px', borderRadius: '4px', border: '1px solid #ccc' }}
-                />
-              </div>
-              <div className="summary-item">
-                <span className="summary-item__label">總收費金額</span>
-                <span className="summary-item__value">${formatCurrency(stats?.totalBilling ?? 0)}</span>
-              </div>
-              <div className="summary-item">
-                <span className="summary-item__label">待收款金額</span>
-                <span className="summary-item__value summary-item__value--warn">${formatCurrency(stats?.unpaidBilling ?? 0)}</span>
-              </div>
-            </div>
-          </TofuCard>
-        )}
+          </div>
+        </TofuCard>
 
         <TofuCard className="summary-card">
           <div className="summary-card__header">
