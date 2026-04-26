@@ -276,37 +276,34 @@ function handleBatchImport(p) {
 
 function handleGetDashboardStats() {
   const tasks = getSheetData(getSheet('工作任務'));
-  const now = new Date();
-  const currentHour = now.getHours();
-  const todayStr = Utilities.formatDate(now, 'Asia/Taipei', 'yyyy/MM/dd');
-  const todayTime = new Date(now.setHours(0,0,0,0)).getTime();
-
+  
   let stats = { pending: 0, delayed: 0, completed: 0, reviewing: 0, reviewed: 0 };
   tasks.forEach(t => {
     const status = String(t.status || '').trim();
-    const compDate = t.completedDate ? Utilities.formatDate(new Date(t.completedDate), 'Asia/Taipei', 'yyyy/MM/dd') : '';
-    const isOverdue = t.dueDate && (new Date(t.dueDate).getTime() < todayTime);
-    
-    let isReviewing = (status === '待審核');
-    if (status === '已完成' || compDate !== '') {
-      if (compDate !== '') {
-        if (compDate < todayStr) isReviewing = true;
-        else if (compDate === todayStr && currentHour >= 22) isReviewing = true;
-      }
-    }
-
     if (status === '已審核') stats.reviewed++;
-    else if (isReviewing) stats.reviewing++;
-    else if (status === '已完成' || compDate !== '') stats.completed++;
-    else if (status === '延遲中' || isOverdue) stats.delayed++;
+    else if (status === '待審核') stats.reviewing++;
+    else if (status === '已完成') stats.completed++;
+    else if (status === '延遲中') stats.delayed++;
     else stats.pending++;
   });
 
-  const annualTasks = getSheetData(getSheet('年度任務計畫'));
-  const currentMonth = String(now.getMonth() + 1);
-  const thisMonthAnnual = annualTasks.filter(a => String(a['月份']) === currentMonth).map(a => a['任務名稱']);
+  const clients = getSheetData(getSheet('客戶資料'));
+  const totalClients = clients.length;
+  const unassignedClients = clients.filter(c => !c.handler || String(c.unallocated).trim() === '是').length;
 
-  return { status: 'success', data: { ...stats, totalClients: getSheetData(getSheet('客戶資料')).length, monthlyGoals: thisMonthAnnual }};
+  const annualTasks = getSheetData(getSheet('年度任務計畫'));
+  const currentMonth = String(new Date().getMonth() + 1);
+  const thisMonthAnnual = annualTasks.filter(a => String(a.month) === currentMonth).map(a => a.annualTask);
+
+  return { 
+    status: 'success', 
+    data: { 
+      ...stats, 
+      totalClients, 
+      unassignedClients,
+      monthlyGoals: thisMonthAnnual 
+    }
+  };
 }
 
 function seedAnnualSchedule() {

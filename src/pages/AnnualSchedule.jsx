@@ -18,7 +18,7 @@ export default function AnnualSchedule() {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({ 月份: '1', 任務名稱: '' });
+  const [form, setForm] = useState({ month: '1', annualTask: '' });
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   // 初始化資料（如果 Sheet 是空的）
@@ -30,12 +30,12 @@ export default function AnnualSchedule() {
 
   const handleOpen = (item = null) => {
     setEditing(item);
-    setForm(item ? { ...item } : { 月份: '1', 任務名稱: '' });
+    setForm(item ? { ...item } : { month: '1', annualTask: '' });
     setModalOpen(true);
   };
 
   const handleSave = async () => {
-    if (!form.任務名稱) return toast.error('請填寫任務名稱');
+    if (!form.annualTask) return toast.error('請填寫任務名稱');
     const result = editing
       ? await update(SHEET_NAMES.ANNUAL, editing.rowIndex, form)
       : await add(SHEET_NAMES.ANNUAL, form);
@@ -60,7 +60,7 @@ export default function AnnualSchedule() {
     const month = String(i + 1);
     return {
       month,
-      tasks: data.filter(d => String(d['月份']) === month)
+      tasks: data.filter(d => String(d.month) === month)
     };
   });
 
@@ -76,7 +76,7 @@ export default function AnnualSchedule() {
             <div className="month-tasks">
               {tasks.map((task) => (
                 <div key={task.rowIndex} className="month-task-item">
-                  <span>{task['任務名稱']}</span>
+                  <span>{task.annualTask}</span>
                   <div className="month-task-actions">
                     <TofuButton size="xs" variant="ghost" onClick={() => handleOpen(task)}>改</TofuButton>
                     <TofuButton size="xs" variant="danger" onClick={() => setDeleteTarget(task)}>刪</TofuButton>
@@ -93,15 +93,15 @@ export default function AnnualSchedule() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
           <TofuSelect 
             label="月份" 
-            value={form['月份']} 
-            onChange={(v) => setForm({ ...form, 月份: v })} 
+            value={form.month} 
+            onChange={(v) => setForm({ ...form, month: v })} 
             options={MONTH_NAMES.map((m, i) => ({ value: String(i + 1), label: m }))} 
           />
-          <TofuInput label="任務名稱" value={form['任務名稱']} onChange={(v) => setForm({ ...form, 任務名稱: v })} required />
+          <TofuInput label="任務名稱" value={form.annualTask} onChange={(v) => setForm({ ...form, annualTask: v })} required />
         </div>
       </TofuModal>
 
-      <ConfirmDialog isOpen={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={handleDelete} title="刪除任務" message={`確定要刪除「${deleteTarget?.任務名稱}」嗎？`} loading={mutating} />
+      <ConfirmDialog isOpen={!!deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={handleDelete} title="刪除任務" message={`確定要刪除「${deleteTarget?.annualTask}」嗎？`} loading={mutating} />
     </div>
   );
 }
