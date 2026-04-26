@@ -36,7 +36,7 @@ export const deleteRow = (params) => callGAS('deleteRow', params);
 export const batchImport = (params) => callGAS('batchImport', params);
 export const completeTask = (params) => callGAS('completeTask', params);
 export const reviewTask = (params) => callGAS('reviewTask', params);
-export const getDashboardStats = () => callGAS('getDashboardStats');
+export const getDashboardStats = (params) => callGAS('getDashboardStats', params);
 export const applySOPToTask = (params) => callGAS('applySOPToTask', params);
 
 // --- 模擬資料區域 ---

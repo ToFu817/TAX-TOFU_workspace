@@ -1,5 +1,5 @@
 export const NAV_ITEMS = [
-  { path: '/', label: '控制台', icon: '📊' },
+  { path: '/', label: '儀表板', icon: '📊' },
   { path: '/tasks', label: '任務管理', icon: '📋' },
   { path: '/clients', label: '客戶資料', icon: '👤' },
   { path: '/allocation', label: '客戶分配', icon: '👥' },

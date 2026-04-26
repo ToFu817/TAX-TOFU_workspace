@@ -312,7 +312,7 @@ function handleBatchImport(p) {
   return { status: 'success', message: '匯入完成' };
 }
 
-function handleGetDashboardStats() {
+function handleGetDashboardStats(p = {}) {
   const tasks = getSheetData(getSheet('工作任務'));
   
   let stats = { pending: 0, delayed: 0, completed: 0, reviewing: 0, reviewed: 0 };
@@ -333,13 +333,41 @@ function handleGetDashboardStats() {
   const currentMonth = String(new Date().getMonth() + 1);
   const thisMonthAnnual = annualTasks.filter(a => String(a.month) === currentMonth).map(a => a.annualTask);
 
+  let totalBilling = 0;
+  let unpaidBilling = 0;
+  
+  const billings = getSheetData(getSheet('收費資料'));
+  const startStr = p.startDate ? String(p.startDate).replace(/-/g, '/') : '';
+  const endStr = p.endDate ? String(p.endDate).replace(/-/g, '/') : '';
+
+  billings.forEach(b => {
+    let matchDate = true;
+    if (startStr && endStr) {
+      // 收費資料的日期通常是 paymentDate 或 billingMonth，這裡用 billingMonth 比較 (YYYY/MM) 或是 paymentDate
+      // 簡單比對如果有 paymentDate 優先用它
+      const bDate = b.paymentDate ? String(b.paymentDate).replace(/-/g, '/') : '';
+      if (bDate) {
+        matchDate = (bDate >= startStr && bDate <= endStr);
+      }
+    }
+    
+    if (matchDate) {
+      const amount = Number(b.amount) || 0;
+      const unpaid = Number(b.unpaid) || 0;
+      totalBilling += amount;
+      unpaidBilling += unpaid;
+    }
+  });
+
   return { 
     status: 'success', 
     data: { 
       ...stats, 
       totalClients, 
       unassignedClients,
-      monthlyGoals: thisMonthAnnual 
+      monthlyGoals: thisMonthAnnual,
+      totalBilling,
+      unpaidBilling
     }
   };
 }
