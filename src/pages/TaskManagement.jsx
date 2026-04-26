@@ -143,16 +143,18 @@ export default function TaskManagement() {
 
     return statusTabs.map((tab) => ({
       ...tab,
-      count: tab.key === 'all' ? tasks.length : tasks.filter((t) => {
-        const status = t.status || '';
+      count: tasks.filter((t) => {
         const isReviewing = checkIsReviewing(t);
+        const status = t.status || '';
         const hasFinished = t.completedDate || ['已完成', '待審核', '已審核'].includes(status);
         const isOverdue = t.dueDate && new Date(t.dueDate) < todayMidnight;
+        const isDelayed = !hasFinished && (status === '延遲中' || isOverdue);
 
+        if (tab.key === 'all') return status !== '已審核';
         if (tab.key === TASK_STATUS.REVIEWING) return isReviewing;
         if (tab.key === '已完成') return status === '已完成' && !isReviewing;
-        if (tab.key === '延遲中') return !hasFinished && (status === '延遲中' || isOverdue);
-        if (tab.key === '待處理') return !hasFinished && !isOverdue;
+        if (tab.key === '延遲中') return isDelayed;
+        if (tab.key === '待處理') return !hasFinished && !isDelayed && !isReviewing;
         return status === tab.key;
       }).length,
     }));
@@ -295,7 +297,7 @@ export default function TaskManagement() {
         const isClicking = clickingIds.has(row.taskId);
         return (
           <TofuCheckbox 
-            checked={isActuallyDone || isClicking} 
+            checked={isActuallyDone} 
             onChange={() => !isActuallyDone && !isClicking && handleToggleStatus(row, '已完成')}
             disabled={isActuallyDone || isClicking}
           />
@@ -313,7 +315,7 @@ export default function TaskManagement() {
         const isClicking = clickingIds.has(row.taskId);
         return (
           <TofuCheckbox 
-            checked={isReviewDone || isClicking} 
+            checked={isReviewDone} 
             onChange={() => canReview && !isClicking && handleToggleStatus(row, '已審核')}
             disabled={!canReview || isReviewDone || isClicking}
           />

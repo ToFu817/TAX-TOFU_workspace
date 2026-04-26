@@ -9,7 +9,7 @@ export default function MainLayout() {
   const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
 
-  const currentNav = NAV_ITEMS.find((item) => location.pathname.startsWith(item.path));
+  const currentNav = NAV_ITEMS.find((item) => item.path === location.pathname) || NAV_ITEMS.find((item) => location.pathname.startsWith(item.path) && item.path !== '/');
   const pageTitle = currentNav?.label || '儀表板';
 
   return (

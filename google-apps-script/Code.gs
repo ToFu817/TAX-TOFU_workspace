@@ -106,9 +106,9 @@ function getInternalKey(header) {
   const h = String(header).trim();
   const exact = Object.keys(FIELD_MAP).find(k => FIELD_MAP[k] === h);
   if (exact) return exact;
-  if (h === '狀態' || h === '目前狀態') return 'status';
-  if (h === '審核時間' || h === '審核日期') return 'reviewDate';
-  if (h === '備註' || h === '備忘錄') return 'note';
+  if (h.includes('狀態')) return 'status';
+  if (h.includes('審核時間') || h.includes('審核日期')) return 'reviewDate';
+  if (h.includes('備註') || h.includes('備忘')) return 'note';
   return h;
 }
 
