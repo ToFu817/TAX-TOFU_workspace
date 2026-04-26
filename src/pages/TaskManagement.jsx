@@ -58,6 +58,7 @@ export default function TaskManagement() {
   const [sopModal, setSopModal] = useState({ isOpen: false, task: null });
   const [importOpen, setImportOpen] = useState(false);
   const [clickingIds, setClickingIds] = useState(new Set());
+  const [filterHandler, setFilterHandler] = useState('');
 
   const clientMap = useMemo(() => {
     const map = new Map();
@@ -79,8 +80,23 @@ export default function TaskManagement() {
   }, [form.clientId, clientMap]);
 
   const displayTasks = useMemo(() => {
-    return tasks.filter(t => canViewAll || String(t.handler || '').trim() === String(user?.employeeName || '').trim());
-  }, [tasks, canViewAll, user]);
+    let list = tasks.filter(t => canViewAll || String(t.handler || '').trim() === String(user?.employeeName || '').trim());
+    
+    if (filterHandler) {
+      list = list.filter(t => String(t.handler || '').trim() === filterHandler);
+    }
+
+    // 排序：先按承辦人，再按預計完成日
+    return [...list].sort((a, b) => {
+      const hA = String(a.handler || '').trim();
+      const hB = String(b.handler || '').trim();
+      if (hA !== hB) return hA.localeCompare(hB, 'zh-Hant');
+      
+      const dA = a.dueDate ? new Date(a.dueDate).getTime() : 0;
+      const dB = b.dueDate ? new Date(b.dueDate).getTime() : 0;
+      return dA - dB;
+    });
+  }, [tasks, canViewAll, user, filterHandler]);
 
   const filteredTasks = useMemo(() => {
     return displayTasks.filter((t) => {
@@ -236,11 +252,14 @@ export default function TaskManagement() {
       render: (_, row) => {
         const isActuallyDone = row.completedDate || ['已完成', '待審核', '已審核'].includes(row.status);
         const isClicking = clickingIds.has(row.taskId);
+        // 限制：只能是承辦人本人，或者是管理員才能按完成
+        const canClick = isAdmin || (String(row.handler || '').trim() === String(user?.employeeName || '').trim());
+        
         return (
           <TofuCheckbox 
             checked={isActuallyDone} 
-            onChange={() => !isActuallyDone && !isClicking && handleToggleStatus(row, '已完成')}
-            disabled={isActuallyDone || isClicking}
+            onChange={() => canClick && !isActuallyDone && !isClicking && handleToggleStatus(row, '已完成')}
+            disabled={isActuallyDone || isClicking || !canClick}
           />
         );
       },
@@ -287,9 +306,23 @@ export default function TaskManagement() {
 
   return (
     <div className="task-mgmt">
-      <div className="task-mgmt__toolbar">
+      <div className="task-mgmt__toolbar" style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
         <TofuButton onClick={handleOpenCreate} icon="➕">新增任務</TofuButton>
         <TofuButton variant="secondary" onClick={() => setImportOpen(true)} icon="📥">Excel 匯入</TofuButton>
+        
+        {canViewAll && (
+          <div style={{ width: '180px' }}>
+            <TofuSelect
+              placeholder="篩選承辦人"
+              value={filterHandler}
+              onChange={setFilterHandler}
+              options={[
+                { value: '', label: '全部承辦人' },
+                ...handlerOptions
+              ]}
+            />
+          </div>
+        )}
       </div>
 
       <TofuTabs tabs={tabsWithCounts} activeTab={activeTab} onChange={setActiveTab} />

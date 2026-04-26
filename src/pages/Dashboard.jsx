@@ -22,7 +22,7 @@ export default function Dashboard() {
   const fetchStats = async () => {
     setLoading(true);
     try {
-      const result = await getDashboardStats({ employeeName: user?.employeeName });
+      const result = await getDashboardStats({ employeeName: user?.employeeName, role: user?.role });
       if (result.status === 'success') setStats(result.data);
     } finally {
       setLoading(false);

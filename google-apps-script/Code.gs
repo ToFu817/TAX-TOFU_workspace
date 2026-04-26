@@ -330,9 +330,14 @@ function handleBatchImport(p) {
 
 function handleGetDashboardStats(p = {}) {
   const tasks = getSheetData(getSheet('工作任務'));
+  const isAdmin = p.role === 'admin';
+  const targetName = String(p.employeeName || '').trim();
+
+  // 資深使用者與一般使用者僅統計自己的數量，管理員統計全部
+  const statsTasks = isAdmin ? tasks : tasks.filter(t => String(t.handler || '').trim() === targetName);
   
   let stats = { pending: 0, delayed: 0, completed: 0, reviewing: 0, reviewed: 0 };
-  tasks.forEach(t => {
+  statsTasks.forEach(t => {
     const status = String(t.status || '').trim();
     if (status === '已審核') stats.reviewed++;
     else if (status === '待審核') stats.reviewing++;
