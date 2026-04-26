@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AccLaw - Redirecting...</title>
+    <script type="text/javascript">
+      // 這是專門為 GitHub Pages SPA 導向設計的腳本
+      // 它會將 404 請求重新導向回首頁，並保留路徑資訊
+      var pathSegmentsToKeep = 1;
+
+      var l = window.location;
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
+        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
