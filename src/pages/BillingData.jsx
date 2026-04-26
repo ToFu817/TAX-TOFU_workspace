@@ -53,8 +53,19 @@ export default function BillingData() {
     if (filterStartMonth || filterEndMonth) {
       list = list.filter(row => {
         if (!row.billingMonth) return false;
-        const bm = String(row.billingMonth).replace(/\//g, '-');
-        const fm = bm.length >= 7 ? bm.substring(0, 7) : bm;
+        let fm = '';
+        if (String(row.billingMonth).includes('T')) {
+          const d = new Date(row.billingMonth);
+          if (!isNaN(d.getTime())) {
+            // 修正 Google Sheet 回傳的 UTC 時間偏差 (補回 8 小時為台灣當地時區)
+            const localD = new Date(d.getTime() + 8 * 60 * 60 * 1000);
+            fm = localD.toISOString().substring(0, 7);
+          }
+        }
+        if (!fm) {
+          const bm = String(row.billingMonth).replace(/\//g, '-');
+          fm = bm.length >= 7 ? bm.substring(0, 7) : bm;
+        }
         if (filterStartMonth && fm < filterStartMonth) return false;
         if (filterEndMonth && fm > filterEndMonth) return false;
         return true;
@@ -203,14 +214,15 @@ export default function BillingData() {
       width: '90px',
       render: (v) => {
         if (!v) return '';
-        const d = new Date(v);
-        if (isNaN(d.getTime())) return String(v).substring(0, 7);
-        // 強制處理時區，避免少一天
-        const year = d.getUTCFullYear();
-        const month = d.getUTCMonth() + 1;
-        // 如果小時是 16，代表是台灣時間 00:00 的 UTC 偏移，要加回一天或直接用當地時間
-        const localDate = new Date(d.getTime() + (d.getTimezoneOffset() * 60000));
-        return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+        if (String(v).includes('T')) {
+          const d = new Date(v);
+          if (!isNaN(d.getTime())) {
+            const localD = new Date(d.getTime() + 8 * 60 * 60 * 1000);
+            return `${localD.getUTCFullYear()}/${String(localD.getUTCMonth() + 1).padStart(2, '0')}`;
+          }
+        }
+        const str = String(v).replace(/-/g, '/');
+        return str.substring(0, 7);
       }
     },
     {
@@ -233,9 +245,14 @@ export default function BillingData() {
     {
       key: 'paymentDate', label: '收款日期', width: '110px', render: (v) => {
         if (!v) return '';
-        const d = new Date(v);
-        if (isNaN(d.getTime())) return v;
-        return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+        if (String(v).includes('T')) {
+          const d = new Date(v);
+          if (!isNaN(d.getTime())) {
+            const localD = new Date(d.getTime() + 8 * 60 * 60 * 1000);
+            return `${localD.getUTCFullYear()}/${String(localD.getUTCMonth() + 1).padStart(2, '0')}/${String(localD.getUTCDate()).padStart(2, '0')}`;
+          }
+        }
+        return String(v).substring(0, 10).replace(/-/g, '/');
       }
     },
   ];

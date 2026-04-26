@@ -337,17 +337,28 @@ function handleGetDashboardStats(p = {}) {
   let unpaidBilling = 0;
   
   const billings = getSheetData(getSheet('收費資料'));
-  const startStr = p.startDate ? String(p.startDate).replace(/-/g, '/') : '';
-  const endStr = p.endDate ? String(p.endDate).replace(/-/g, '/') : '';
+  const startStr = p.startMonth ? String(p.startMonth) : '';
+  const endStr = p.endMonth ? String(p.endMonth) : '';
 
   billings.forEach(b => {
     let matchDate = true;
     if (startStr && endStr) {
-      // 收費資料的日期通常是 paymentDate 或 billingMonth，這裡用 billingMonth 比較 (YYYY/MM) 或是 paymentDate
-      // 簡單比對如果有 paymentDate 優先用它
-      const bDate = b.paymentDate ? String(b.paymentDate).replace(/-/g, '/') : '';
-      if (bDate) {
-        matchDate = (bDate >= startStr && bDate <= endStr);
+      let bMonth = '';
+      if (Object.prototype.toString.call(b.billingMonth) === '[object Date]' && !isNaN(b.billingMonth.getTime())) {
+        bMonth = Utilities.formatDate(b.billingMonth, 'Asia/Taipei', 'yyyy-MM');
+      } else if (b.billingMonth) {
+        let str = String(b.billingMonth).trim();
+        if (str.includes('T')) {
+          const d = new Date(str);
+          if (!isNaN(d.getTime())) bMonth = Utilities.formatDate(d, 'Asia/Taipei', 'yyyy-MM');
+        } else {
+          bMonth = str.substring(0, 7).replace(/\//g, '-');
+        }
+      }
+      if (bMonth) {
+        matchDate = (bMonth >= startStr && bMonth <= endStr);
+      } else {
+        matchDate = false;
       }
     }
     
