@@ -164,7 +164,9 @@ function getInternalKey(header) {
 }
 
 function getSheet(name) {
-  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let ss = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ss) ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  
   let s = ss.getSheetByName(name);
   if (!s) s = ss.insertSheet(name);
   return s;
