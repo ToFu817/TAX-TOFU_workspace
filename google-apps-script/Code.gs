@@ -33,47 +33,57 @@ const FIELD_MAP = {
  * 手動編輯 Google Sheet 時自動同步
  */
 function onEdit(e) {
+  if (!e || !e.range) return; // 避免在編輯器直接執行報錯
   const range = e.range;
   const sheet = range.getSheet();
   const sheetName = sheet.getName();
   
+  const startRow = range.getRow();
+  const numRows = range.getNumRows();
+  
   if (sheetName === '客戶資料') {
-    const row = range.getRow();
-    if (row < 2) return;
+    if (startRow < 2 && numRows === 1) return;
     
-    const hs = getHeaders(sheet);
-    const rowData = getSheetData(sheet).find(d => d.rowIndex === row);
-    if (rowData) {
-      syncToAllocation(rowData);
+    const clientDataAll = getSheetData(sheet);
+    const allocSheet = getSheet('客戶分配');
+    const allocHs = getHeaders(allocSheet);
+    let allocData = getSheetData(allocSheet);
+    const empData = getSheetData(getSheet('群組管理'));
+
+    for (let i = 0; i < numRows; i++) {
+      const r = startRow + i;
+      if (r < 2) continue;
+      const rowData = clientDataAll.find(d => d.rowIndex === r);
+      if (rowData) {
+        fastSyncToAllocation(rowData, allocSheet, allocHs, allocData, empData);
+        // 更新本地端 allocData 以免下一筆重複新增
+        allocData = getSheetData(allocSheet);
+      }
     }
   }
   
   if (sheetName === '工作任務') {
-    const row = range.getRow();
-    if (row < 2) return;
+    if (startRow < 2 && numRows === 1) return;
     const hs = getHeaders(sheet);
-    const rowData = getSheetData(sheet).find(d => d.rowIndex === row);
+    const taskDataAll = getSheetData(sheet);
     
-    if (rowData) {
-      const originalStatus = rowData.status;
-      processTaskStatus(rowData);
-      if (originalStatus !== rowData.status) {
-        sheet.getRange(row, 1, 1, hs.length).setValues([mapDataToRow(hs, rowData)]);
+    for (let i = 0; i < numRows; i++) {
+      const r = startRow + i;
+      if (r < 2) continue;
+      const rowData = taskDataAll.find(d => d.rowIndex === r);
+      if (rowData) {
+        const originalStatus = rowData.status;
+        processTaskStatus(rowData);
+        if (originalStatus !== rowData.status) {
+          sheet.getRange(r, 1, 1, hs.length).setValues([mapDataToRow(hs, rowData)]);
+        }
       }
     }
   }
 }
 
-function syncToAllocation(clientData) {
-  const allocSheet = getSheet('客戶分配');
-  const hs = getHeaders(allocSheet);
-  const data = getSheetData(allocSheet);
-  
-  // 查找是否已存在
-  const match = data.find(d => String(d.clientId).trim() === String(clientData.clientId).trim());
-  
-  // 找出員工編號
-  const empData = getSheetData(getSheet('群組管理'));
+function fastSyncToAllocation(clientData, allocSheet, hs, allocData, empData) {
+  const match = allocData.find(d => String(d.clientId).trim() === String(clientData.clientId).trim());
   const emp = empData.find(e => e.employeeName === clientData.handler);
   
   const allocRow = {
@@ -88,6 +98,32 @@ function syncToAllocation(clientData) {
   } else {
     allocSheet.appendRow(mapDataToRow(hs, allocRow));
   }
+}
+
+// 供管理員手動執行：強制同步「客戶資料」到「客戶分配」
+function adminSyncAllClients() {
+  const clientSheet = getSheet('客戶資料');
+  const clientDataAll = getSheetData(clientSheet);
+  
+  const allocSheet = getSheet('客戶分配');
+  const allocHs = getHeaders(allocSheet);
+  const empData = getSheetData(getSheet('群組管理'));
+  
+  let allocData = getSheetData(allocSheet);
+  
+  clientDataAll.forEach(rowData => {
+    fastSyncToAllocation(rowData, allocSheet, allocHs, allocData, empData);
+    allocData = getSheetData(allocSheet); // 確保每次拿到最新行數
+  });
+}
+
+function syncToAllocation(clientData) {
+  const allocSheet = getSheet('客戶分配');
+  const hs = getHeaders(allocSheet);
+  const allocData = getSheetData(allocSheet);
+  const empData = getSheetData(getSheet('群組管理'));
+  
+  fastSyncToAllocation(clientData, allocSheet, hs, allocData, empData);
 }
 
 function doGet(e) {
