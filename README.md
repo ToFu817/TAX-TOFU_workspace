@@ -1,4 +1,4 @@
-# 🧾 稅務小豆腐案件管理系統 (AccLaw Case Management System)
+# 🧾 稅務小豆腐案件管理系統 (TAX TOFU Case Management System)
 
 這是一個專為會計師事務所設計的現代化案件管理系統，採用 **React + Google Apps Script (GAS) + Google Sheets** 架構。本系統將 Google Sheets 當作資料庫，具備零成本、高度安全且資料完全私有的優點。
 
