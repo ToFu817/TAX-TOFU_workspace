@@ -64,6 +64,10 @@ export const CLIENT_STATUS = {
   TRANSFERRED: '轉出',
 };
 
+export const ORG_TYPES = [
+  '公司', '商號(發票)', '商號(免用)', '執行業務', '機關團體', '總公司', '分公司'
+];
+
 export const CLIENT_STATUS_COLORS = {
   '營業中': 'green',
   '停業': 'orange',

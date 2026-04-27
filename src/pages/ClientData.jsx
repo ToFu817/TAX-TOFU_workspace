@@ -3,7 +3,7 @@ import { useGasQuery } from '../hooks/useGasQuery';
 import { useGasRpc } from '../hooks/useGasRpc';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/UI/TofuToast';
-import { SHEET_NAMES, CLIENT_STATUS, CLIENT_STATUS_COLORS } from '../utils/constants';
+import { SHEET_NAMES, CLIENT_STATUS, CLIENT_STATUS_COLORS, ORG_TYPES } from '../utils/constants';
 import TofuTable from '../components/UI/TofuTable';
 import TofuBadge from '../components/UI/TofuBadge';
 import TofuButton from '../components/UI/TofuButton';
@@ -170,6 +170,7 @@ export default function ClientData() {
                 <p className="detail-note">{drawerClient.note || '無備註'}</p>
               </div>
               <div className="drawer-footer">
+                <TofuButton size="sm" variant="ghost" onClick={(e) => handleOpenEdit(drawerClient, e)}>編輯資料</TofuButton>
                 <TofuButton size="sm" variant="danger" onClick={() => setDeleteTarget(drawerClient)}>刪除客戶</TofuButton>
               </div>
             </div>
@@ -182,6 +183,7 @@ export default function ClientData() {
         <div className="modal-form-grid">
           <TofuInput label="客戶編號" value={form.clientId} onChange={(v) => setForm({...form, clientId: v})} required />
           <TofuInput label="公司名稱" value={form.companyName} onChange={(v) => setForm({...form, companyName: v})} required />
+          <TofuSelect label="組織型態" value={form.orgType} onChange={(v) => setForm({...form, orgType: v})} options={ORG_TYPES} />
           <TofuInput label="統一編號" value={form.taxId} onChange={(v) => setForm({...form, taxId: v})} />
           <TofuSelect label="承辦人員" value={form.handler} onChange={(v) => setForm({...form, handler: v})} options={handlerOptions} />
           <TofuSelect label="狀態" value={form.status} onChange={(v) => setForm({...form, status: v})} options={Object.values(CLIENT_STATUS)} />
