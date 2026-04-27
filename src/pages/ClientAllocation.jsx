@@ -107,7 +107,7 @@ export default function ClientAllocation() {
                     <span className="alloc-client-id">[{client.clientId}]</span>
                     <span className="alloc-client-name">{client.companyName}</span>
                   </div>
-                  <TofuButton size="sm" onClick={() => { setSelectedClient(client); setSelectedHandler(''); setAssignModal(true); }}>分配</TofuButton>
+                  <TofuButton size="sm" variant="success" onClick={() => { setSelectedClient(client); setSelectedHandler(''); setAssignModal(true); }}>分配</TofuButton>
                 </div>
               ))
             )}
@@ -117,46 +117,51 @@ export default function ClientAllocation() {
         <div className="alloc-handlers">
           <h3 className="alloc-section-title">👥 團隊案件分配</h3>
           <div className="alloc-handler-grid">
-            {Object.entries(handlerGroups).map(([name, group]) => (
-              <TofuCard key={name} className="alloc-handler-card">
-                <div className="alloc-handler-header">
-                  <TofuAvatar seed={name} size={32} />
-                  <div>
-                    <span className="alloc-handler-name">{name}</span>
-                    <span className="alloc-handler-count">
-                      {Object.values(group || {}).reduce((sum, list) => sum + (list?.length || 0), 0)} 件
-                    </span>
+            {Object.entries(handlerGroups).map(([name, group]) => {
+              const totalCount = Object.values(group || {}).reduce((sum, orgGroups) => 
+                sum + Object.values(orgGroups).reduce((s, list) => s + list.length, 0), 0);
+              
+              return (
+                <TofuCard key={name} className="alloc-handler-card">
+                  <div className="alloc-handler-header">
+                    <TofuAvatar seed={name} size={32} />
+                    <div>
+                      <span className="alloc-handler-name">{name}</span>
+                      <span className="alloc-handler-count">
+                        {totalCount} 件
+                      </span>
+                    </div>
                   </div>
-                </div>
-                <div className="alloc-handler-clients">
-                  {Object.entries(group || {}).map(([status, orgGroups]) => {
-                    const statusCount = Object.values(orgGroups).reduce((sum, list) => sum + list.length, 0);
-                    return statusCount > 0 && (
-                      <div key={status} className="alloc-status-group">
-                        <div className="alloc-status-label">{status} ({statusCount})</div>
-                        {Object.entries(orgGroups).map(([orgType, groupClients]) => (
-                          <div key={orgType} className="alloc-org-subgroup">
-                            <div className="alloc-org-label">{orgType}</div>
-                            {groupClients.map((c) => (
-                              <div key={c.clientId} className="alloc-handler-client-row">
-                                <div className="alloc-handler-client-info">
-                                  <span className="alloc-client-id">[{c.clientId}]</span>
-                                  <span>{c.companyName}</span>
+                  <div className="alloc-handler-clients">
+                    {Object.entries(group || {}).map(([status, orgGroups]) => {
+                      const statusCount = Object.values(orgGroups).reduce((sum, list) => sum + list.length, 0);
+                      return statusCount > 0 && (
+                        <div key={status} className="alloc-status-group">
+                          <div className="alloc-status-label">{status} ({statusCount})</div>
+                          {Object.entries(orgGroups).map(([orgType, groupClients]) => (
+                            <div key={orgType} className="alloc-org-subgroup">
+                              <div className="alloc-org-label">{orgType}</div>
+                              {groupClients.map((c) => (
+                                <div key={c.clientId} className="alloc-handler-client-row">
+                                  <div className="alloc-handler-client-info">
+                                    <span className="alloc-client-id">[{c.clientId}]</span>
+                                    <span>{c.companyName}</span>
+                                  </div>
+                                  <div className="alloc-client-actions">
+                                    <TofuButton size="xs" variant="success" onClick={() => { setSelectedClient(c); setSelectedHandler(c.handler); setAssignModal(true); }}>更改</TofuButton>
+                                    <TofuButton size="xs" variant="danger" onClick={() => setDeleteTarget(c)}>移除</TofuButton>
+                                  </div>
                                 </div>
-                                <div className="alloc-client-actions">
-                                  <TofuButton size="xs" variant="ghost" onClick={() => { setSelectedClient(c); setSelectedHandler(c.handler); setAssignModal(true); }}>更改</TofuButton>
-                                  <TofuButton size="xs" variant="danger" onClick={() => setDeleteTarget(c)}>移除</TofuButton>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        ))}
-                      </div>
-                    );
-                  })}
-                </div>
-              </TofuCard>
-            ))}
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </TofuCard>
+              );
+            })}
           </div>
         </div>
       </div>
