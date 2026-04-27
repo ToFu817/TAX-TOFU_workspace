@@ -74,8 +74,21 @@
 }
 
 .alloc-handler-client-row {
-  font-size: 1rem; /* 加大客戶列字體 */
-  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-md);
+  padding: 8px 16px;
+  background: white;
+  margin-bottom: 4px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.alloc-client-actions {
+  display: flex;
+  gap: var(--space-sm);
 }
 
 .alloc-handler-client-info {
